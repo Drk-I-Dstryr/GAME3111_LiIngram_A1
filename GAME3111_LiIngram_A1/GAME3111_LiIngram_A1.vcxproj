@@ -27,7 +27,7 @@
     <ClCompile Include="Common\GeometryGenerator.cpp" />
     <ClCompile Include="Common\MathHelper.cpp" />
     <ClCompile Include="Source\FrameResource.cpp" />
-    <ClCompile Include="Source\Week4-1-BoxUsingFrameResources.cpp" />
+    <ClCompile Include="Source\Week4-6-ShapeComplete.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\Camera.h" />
