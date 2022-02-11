@@ -2,15 +2,15 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\DirectX\GAME3111_LiIngram_A1\x64\Debug\GAME3111_LiIngram_A1.exe</FullPath>
+      <FullPath>C:\Users\russe\GAME3111_LiIngram_A1\GAME3111_LiIngram_A1\x64\Debug\GAME3111_LiIngram_A1.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>C:\DirectX\GAME3111_LiIngram_A1\x64\Debug\PS.cso</FullPath>
+      <FullPath>C:\Users\russe\GAME3111_LiIngram_A1\GAME3111_LiIngram_A1\x64\Debug\PS.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\DirectX\GAME3111_LiIngram_A1\x64\Debug\VS.cso</FullPath>
+      <FullPath>C:\Users\russe\GAME3111_LiIngram_A1\GAME3111_LiIngram_A1\x64\Debug\VS.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />
