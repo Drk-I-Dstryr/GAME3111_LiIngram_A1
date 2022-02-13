@@ -1,11 +1,2 @@
-﻿  Camera.cpp
-  d3dApp.cpp
-  d3dUtil.cpp
-  DDSTextureLoader.cpp
-  GameTimer.cpp
-  GeometryGenerator.cpp
-  MathHelper.cpp
-  FrameResource.cpp
-  Week4-6-ShapeComplete.cpp
-  Generating Code...
+﻿  Week4-6-ShapeComplete.cpp
   GAME3111_LiIngram_A1.vcxproj -> C:\Users\russe\GAME3111_LiIngram_A1\GAME3111_LiIngram_A1\x64\Debug\GAME3111_LiIngram_A1.exe
