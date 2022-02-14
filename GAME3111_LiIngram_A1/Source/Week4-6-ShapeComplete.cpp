@@ -540,7 +540,8 @@ void ShapesApp::BuildShapeGeometry()
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData box = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 0);
 	GeometryGenerator::MeshData grid = geoGen.CreateGrid(100.0f, 100.0f, 60, 40);
-	GeometryGenerator::MeshData sphere = geoGen.CreateSphere(0.5f, 20, 20);
+	GeometryGenerator::MeshData sphere = geoGen.CreateSphere(12.0f, 20, 20);
+	//GeometryGenerator::MeshData sphere2 = geoGen.CreateSphere(6.0f, 20, 20);
 	GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(10.0f, 10.0f, 30.0f, 20, 20);
 	GeometryGenerator::MeshData cone = geoGen.CreateCylinder(15.0f, 0.0f, 10.0f, 20, 20);
 
@@ -551,6 +552,7 @@ void ShapesApp::BuildShapeGeometry()
 	UINT boxVertexOffset = 0;
 	UINT gridVertexOffset = (UINT)box.Vertices.size();
 	UINT sphereVertexOffset = gridVertexOffset + (UINT)grid.Vertices.size();
+	//UINT sphereVertexOffset2 = gridVertexOffset + (UINT)grid.Vertices.size();
 	UINT cylinderVertexOffset = sphereVertexOffset + (UINT)sphere.Vertices.size();
 	UINT coneVertexOffset = sphereVertexOffset + (UINT)sphere.Vertices.size();
 
@@ -558,6 +560,7 @@ void ShapesApp::BuildShapeGeometry()
 	UINT boxIndexOffset = 0;
 	UINT gridIndexOffset = (UINT)box.Indices32.size();
 	UINT sphereIndexOffset = gridIndexOffset + (UINT)grid.Indices32.size();
+	//UINT sphereIndexOffset2 = gridIndexOffset + (UINT)grid.Indices32.size();
 	UINT cylinderIndexOffset = sphereIndexOffset + (UINT)sphere.Indices32.size();
 	UINT coneIndexOffset = sphereIndexOffset + (UINT)sphere.Indices32.size();
 
@@ -579,6 +582,11 @@ void ShapesApp::BuildShapeGeometry()
 	sphereSubmesh.StartIndexLocation = sphereIndexOffset;
 	sphereSubmesh.BaseVertexLocation = sphereVertexOffset;
 
+	/*SubmeshGeometry sphereSubmesh2;
+	sphereSubmesh2.IndexCount = (UINT)sphere2.Indices32.size();
+	sphereSubmesh2.StartIndexLocation = sphereIndexOffset2;
+	sphereSubmesh2.BaseVertexLocation = sphereVertexOffset2;*/
+
 	SubmeshGeometry cylinderSubmesh;
 	cylinderSubmesh.IndexCount = (UINT)cylinder.Indices32.size();
 	cylinderSubmesh.StartIndexLocation = cylinderIndexOffset;
@@ -596,6 +604,7 @@ void ShapesApp::BuildShapeGeometry()
 		box.Vertices.size() +
 		grid.Vertices.size() +
 		sphere.Vertices.size() +
+		//sphere2.Vertices.size() +
 		cylinder.Vertices.size() +
 		cone.Vertices.size();
 
@@ -622,6 +631,12 @@ void ShapesApp::BuildShapeGeometry()
 		vertices[k].Color = XMFLOAT4(DirectX::Colors::Crimson);
 	}
 
+	/*for (size_t i = 0; i < sphere2.Vertices.size(); ++i, ++k)
+	{
+		vertices[k].Pos = sphere2.Vertices[i].Position;
+		vertices[k].Color = XMFLOAT4(DirectX::Colors::Crimson);
+	}*/
+
 	for (size_t i = 0; i < cylinder.Vertices.size(); ++i, ++k)
 	{
 		vertices[k].Pos = cylinder.Vertices[i].Position;
@@ -639,6 +654,7 @@ void ShapesApp::BuildShapeGeometry()
 	indices.insert(indices.end(), std::begin(box.GetIndices16()), std::end(box.GetIndices16()));
 	indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
 	indices.insert(indices.end(), std::begin(sphere.GetIndices16()), std::end(sphere.GetIndices16()));
+	//indices.insert(indices.end(), std::begin(sphere2.GetIndices16()), std::end(sphere2.GetIndices16()));
 	indices.insert(indices.end(), std::begin(cylinder.GetIndices16()), std::end(cylinder.GetIndices16()));
 	indices.insert(indices.end(), std::begin(cone.GetIndices16()), std::end(cone.GetIndices16()));
 
@@ -669,6 +685,7 @@ void ShapesApp::BuildShapeGeometry()
 	geo->DrawArgs["box"] = boxSubmesh;
 	geo->DrawArgs["grid"] = gridSubmesh;
 	geo->DrawArgs["sphere"] = sphereSubmesh;
+	//geo->DrawArgs["sphere2"] = sphereSubmesh;
 	geo->DrawArgs["cylinder"] = cylinderSubmesh;
 	geo->DrawArgs["cone"] = coneSubmesh;
 
@@ -772,10 +789,297 @@ void ShapesApp::BuildRenderItems()
 	box3Ritem->BaseVertexLocation = box3Ritem->Geo->DrawArgs["box"].BaseVertexLocation;
 	mAllRitems.push_back(std::move(box3Ritem));
 
+	/*auto leftSphereRitem2 = std::make_unique<RenderItem>();
+
+	XMMATRIX leftSphereWorld2 = XMMatrixTranslation(-30.0f, 10.0f, -10.0f);
+	XMStoreFloat4x4(&leftSphereRitem2->World, leftSphereWorld2);
+	leftSphereRitem2->ObjCBIndex = 3;
+	leftSphereRitem2->Geo = mGeometries["shapeGeo"].get();
+	leftSphereRitem2->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	leftSphereRitem2->IndexCount = leftSphereRitem2->Geo->DrawArgs["sphere2"].IndexCount;
+	leftSphereRitem2->StartIndexLocation = leftSphereRitem2->Geo->DrawArgs["sphere2"].StartIndexLocation;
+	leftSphereRitem2->BaseVertexLocation = leftSphereRitem2->Geo->DrawArgs["sphere2"].BaseVertexLocation;
+
+	auto rightSphereRitem2 = std::make_unique<RenderItem>();
+
+	auto leftSphereRitem3 = std::make_unique<RenderItem>();
+	auto rightSphereRitem3 = std::make_unique<RenderItem>();
+
+	auto leftSphereRitem4 = std::make_unique<RenderItem>();
+	auto rightSphereRitem4 = std::make_unique<RenderItem>();
+
+	auto leftSphereRitem5 = std::make_unique<RenderItem>();
+	auto rightSphereRitem5 = std::make_unique<RenderItem>();
+
+	auto frontSphereRitem1 = std::make_unique<RenderItem>();
+	auto frontSphereRitem2 = std::make_unique<RenderItem>();*/
+
+	/*XMMATRIX leftSphereWorld2 = XMMatrixTranslation(-30.0f, 10.0f, -10.0f);
+	XMMATRIX rightSphereWorld2 = XMMatrixTranslation(+30.0f, 10.0f, -10.0f);*/
+
+	//Front Wall1
+	auto box4Ritem = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&box4Ritem->World, XMMatrixScaling(10.0f, 20.0f, 35.0f) * XMMatrixTranslation(-45.0f, 10.0f, -37.0f));
+
+	box4Ritem->ObjCBIndex = 3;
+	box4Ritem->Geo = mGeometries["shapeGeo"].get();
+	box4Ritem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	box4Ritem->IndexCount = box4Ritem->Geo->DrawArgs["box"].IndexCount;
+	box4Ritem->StartIndexLocation = box4Ritem->Geo->DrawArgs["box"].StartIndexLocation;
+	box4Ritem->BaseVertexLocation = box4Ritem->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(box4Ritem));
+
+	//Front Wall2
+	auto box5Ritem = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&box5Ritem->World, XMMatrixScaling(10.0f, 20.0f, 35.0f) * XMMatrixTranslation(-45.0f, 10.0f, 28.0f));
+
+	box5Ritem->ObjCBIndex = 4;
+	box5Ritem->Geo = mGeometries["shapeGeo"].get();
+	box5Ritem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	box5Ritem->IndexCount = box5Ritem->Geo->DrawArgs["box"].IndexCount;
+	box5Ritem->StartIndexLocation = box5Ritem->Geo->DrawArgs["box"].StartIndexLocation;
+	box5Ritem->BaseVertexLocation = box5Ritem->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(box5Ritem));
+
+	//Front Wall3
+	auto box6Ritem = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&box6Ritem->World, XMMatrixScaling(10.0f, 6.0f, 31.0f) * XMMatrixTranslation(-45.0f, 17.0f, -4.0f));
+
+	box6Ritem->ObjCBIndex = 5;
+	box6Ritem->Geo = mGeometries["shapeGeo"].get();
+	box6Ritem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	box6Ritem->IndexCount = box6Ritem->Geo->DrawArgs["box"].IndexCount;
+	box6Ritem->StartIndexLocation = box6Ritem->Geo->DrawArgs["box"].StartIndexLocation;
+	box6Ritem->BaseVertexLocation = box6Ritem->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(box6Ritem));
+
+	//Front Merlins
+	auto FMerlin1 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&FMerlin1->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(-40.0f, 22.0f, -25.0f));
+
+	FMerlin1->ObjCBIndex = 6;
+	FMerlin1->Geo = mGeometries["shapeGeo"].get();
+	FMerlin1->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	FMerlin1->IndexCount = FMerlin1->Geo->DrawArgs["box"].IndexCount;
+	FMerlin1->StartIndexLocation = FMerlin1->Geo->DrawArgs["box"].StartIndexLocation;
+	FMerlin1->BaseVertexLocation = FMerlin1->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(FMerlin1));
+
+	auto FMerlin2 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&FMerlin2->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(-40.0f, 22.0f, -5.0f));
+
+	FMerlin2->ObjCBIndex = 7;
+	FMerlin2->Geo = mGeometries["shapeGeo"].get();
+	FMerlin2->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	FMerlin2->IndexCount = FMerlin2->Geo->DrawArgs["box"].IndexCount;
+	FMerlin2->StartIndexLocation = FMerlin2->Geo->DrawArgs["box"].StartIndexLocation;
+	FMerlin2->BaseVertexLocation = FMerlin2->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(FMerlin2));
+
+	auto FMerlin3 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&FMerlin3->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(-40.0f, 22.0f, 15.0f));
+
+	FMerlin3->ObjCBIndex = 8;
+	FMerlin3->Geo = mGeometries["shapeGeo"].get();
+	FMerlin3->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	FMerlin3->IndexCount = FMerlin3->Geo->DrawArgs["box"].IndexCount;
+	FMerlin3->StartIndexLocation = FMerlin3->Geo->DrawArgs["box"].StartIndexLocation;
+	FMerlin3->BaseVertexLocation = FMerlin3->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(FMerlin3));
+
+	auto FMerlin4 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&FMerlin4->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(-50.0f, 22.0f, 23.0f));
+
+	FMerlin4->ObjCBIndex = 9;
+	FMerlin4->Geo = mGeometries["shapeGeo"].get();
+	FMerlin4->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	FMerlin4->IndexCount = FMerlin4->Geo->DrawArgs["box"].IndexCount;
+	FMerlin4->StartIndexLocation = FMerlin4->Geo->DrawArgs["box"].StartIndexLocation;
+	FMerlin4->BaseVertexLocation = FMerlin4->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(FMerlin4));
+
+	auto FMerlin5 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&FMerlin5->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(-50.0f, 22.0f, 3.0f));
+
+	FMerlin5->ObjCBIndex = 10;
+	FMerlin5->Geo = mGeometries["shapeGeo"].get();
+	FMerlin5->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	FMerlin5->IndexCount = FMerlin5->Geo->DrawArgs["box"].IndexCount;
+	FMerlin5->StartIndexLocation = FMerlin5->Geo->DrawArgs["box"].StartIndexLocation;
+	FMerlin5->BaseVertexLocation = FMerlin5->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(FMerlin5));
+
+	auto FMerlin6 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&FMerlin6->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(-50.0f, 22.0f, -17.0f));
+
+	FMerlin6->ObjCBIndex = 11;
+	FMerlin6->Geo = mGeometries["shapeGeo"].get();
+	FMerlin6->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	FMerlin6->IndexCount = FMerlin6->Geo->DrawArgs["box"].IndexCount;
+	FMerlin6->StartIndexLocation = FMerlin6->Geo->DrawArgs["box"].StartIndexLocation;
+	FMerlin6->BaseVertexLocation = FMerlin6->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(FMerlin6));
+
+	auto FMerlin7 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&FMerlin7->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(-50.0f, 22.0f, -37.0f));
+
+	FMerlin7->ObjCBIndex = 12;
+	FMerlin7->Geo = mGeometries["shapeGeo"].get();
+	FMerlin7->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	FMerlin7->IndexCount = FMerlin7->Geo->DrawArgs["box"].IndexCount;
+	FMerlin7->StartIndexLocation = FMerlin7->Geo->DrawArgs["box"].StartIndexLocation;
+	FMerlin7->BaseVertexLocation = FMerlin7->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(FMerlin7));
+
+	//Front Crenel
+	auto FCrenel1 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&FCrenel1->World, XMMatrixScaling(0.5f, 4.0f, 100.0f)* XMMatrixTranslation(-50.2f, 20.0f, -4.0f));
+
+	FCrenel1->ObjCBIndex = 13;
+	FCrenel1->Geo = mGeometries["shapeGeo"].get();
+	FCrenel1->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	FCrenel1->IndexCount = FCrenel1->Geo->DrawArgs["box"].IndexCount;
+	FCrenel1->StartIndexLocation = FCrenel1->Geo->DrawArgs["box"].StartIndexLocation;
+	FCrenel1->BaseVertexLocation = FCrenel1->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(FCrenel1));
+
+	auto FCrenel2 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&FCrenel2->World, XMMatrixScaling(0.5f, 4.0f, 100.0f)* XMMatrixTranslation(-40.2f, 20.0f, -4.0f));
+
+	FCrenel2->ObjCBIndex = 14;
+	FCrenel2->Geo = mGeometries["shapeGeo"].get();
+	FCrenel2->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	FCrenel2->IndexCount = FCrenel2->Geo->DrawArgs["box"].IndexCount;
+	FCrenel2->StartIndexLocation = FCrenel2->Geo->DrawArgs["box"].StartIndexLocation;
+	FCrenel2->BaseVertexLocation = FCrenel2->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(FCrenel2));
+
+	//Back Merlins
+	auto BMerlin1 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&BMerlin1->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(45.0f, 22.0f, -25.0f));
+
+	BMerlin1->ObjCBIndex = 15;
+	BMerlin1->Geo = mGeometries["shapeGeo"].get();
+	BMerlin1->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	BMerlin1->IndexCount = BMerlin1->Geo->DrawArgs["box"].IndexCount;
+	BMerlin1->StartIndexLocation = BMerlin1->Geo->DrawArgs["box"].StartIndexLocation;
+	BMerlin1->BaseVertexLocation = BMerlin1->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(BMerlin1));
+
+	auto BMerlin2 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&BMerlin2->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(45.0f, 22.0f, -5.0f));
+
+	BMerlin2->ObjCBIndex = 16;
+	BMerlin2->Geo = mGeometries["shapeGeo"].get();
+	BMerlin2->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	BMerlin2->IndexCount = BMerlin2->Geo->DrawArgs["box"].IndexCount;
+	BMerlin2->StartIndexLocation = BMerlin2->Geo->DrawArgs["box"].StartIndexLocation;
+	BMerlin2->BaseVertexLocation = BMerlin2->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(BMerlin2));
+
+	auto BMerlin3 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&BMerlin3->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(45.0f, 22.0f, 15.0f));
+
+	BMerlin3->ObjCBIndex = 17;
+	BMerlin3->Geo = mGeometries["shapeGeo"].get();
+	BMerlin3->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	BMerlin3->IndexCount = BMerlin3->Geo->DrawArgs["box"].IndexCount;
+	BMerlin3->StartIndexLocation = BMerlin3->Geo->DrawArgs["box"].StartIndexLocation;
+	BMerlin3->BaseVertexLocation = BMerlin3->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(BMerlin3));
+
+	auto BMerlin4 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&BMerlin4->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(55.0f, 22.0f, 23.0f));
+
+	BMerlin4->ObjCBIndex = 18;
+	BMerlin4->Geo = mGeometries["shapeGeo"].get();
+	BMerlin4->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	BMerlin4->IndexCount = BMerlin4->Geo->DrawArgs["box"].IndexCount;
+	BMerlin4->StartIndexLocation = BMerlin4->Geo->DrawArgs["box"].StartIndexLocation;
+	BMerlin4->BaseVertexLocation = BMerlin4->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(BMerlin4));
+
+	auto BMerlin5 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&BMerlin5->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(55.0f, 22.0f, 3.0f));
+
+	BMerlin5->ObjCBIndex = 19;
+	BMerlin5->Geo = mGeometries["shapeGeo"].get();
+	BMerlin5->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	BMerlin5->IndexCount = BMerlin5->Geo->DrawArgs["box"].IndexCount;
+	BMerlin5->StartIndexLocation = BMerlin5->Geo->DrawArgs["box"].StartIndexLocation;
+	BMerlin5->BaseVertexLocation = BMerlin5->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(BMerlin5));
+
+	auto BMerlin6 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&BMerlin6->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(55.0f, 22.0f, -17.0f));
+
+	BMerlin6->ObjCBIndex = 20;
+	BMerlin6->Geo = mGeometries["shapeGeo"].get();
+	BMerlin6->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	BMerlin6->IndexCount = BMerlin6->Geo->DrawArgs["box"].IndexCount;
+	BMerlin6->StartIndexLocation = BMerlin6->Geo->DrawArgs["box"].StartIndexLocation;
+	BMerlin6->BaseVertexLocation = BMerlin6->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(BMerlin6));
+
+	auto BMerlin7 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&BMerlin7->World, XMMatrixScaling(1.0f, 6.0f, 15.0f)* XMMatrixTranslation(55.0f, 22.0f, -37.0f));
+
+	BMerlin7->ObjCBIndex = 21;
+	BMerlin7->Geo = mGeometries["shapeGeo"].get();
+	BMerlin7->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	BMerlin7->IndexCount = BMerlin7->Geo->DrawArgs["box"].IndexCount;
+	BMerlin7->StartIndexLocation = BMerlin7->Geo->DrawArgs["box"].StartIndexLocation;
+	BMerlin7->BaseVertexLocation = BMerlin7->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(BMerlin7));
+
+	//Back Crenel
+	auto BCrenel1 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&BCrenel1->World, XMMatrixScaling(0.5f, 4.0f, 100.0f)* XMMatrixTranslation(55.2f, 20.0f, -4.0f));
+
+	BCrenel1->ObjCBIndex = 22;
+	BCrenel1->Geo = mGeometries["shapeGeo"].get();
+	BCrenel1->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	BCrenel1->IndexCount = BCrenel1->Geo->DrawArgs["box"].IndexCount;
+	BCrenel1->StartIndexLocation = BCrenel1->Geo->DrawArgs["box"].StartIndexLocation;
+	BCrenel1->BaseVertexLocation = BCrenel1->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(BCrenel1));
+
+	auto BCrenel2 = std::make_unique<RenderItem>();
+
+	XMStoreFloat4x4(&BCrenel2->World, XMMatrixScaling(0.5f, 4.0f, 100.0f)* XMMatrixTranslation(45.2f, 20.0f, -4.0f));
+
+	BCrenel2->ObjCBIndex = 23;
+	BCrenel2->Geo = mGeometries["shapeGeo"].get();
+	BCrenel2->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	BCrenel2->IndexCount = BCrenel2->Geo->DrawArgs["box"].IndexCount;
+	BCrenel2->StartIndexLocation = BCrenel2->Geo->DrawArgs["box"].StartIndexLocation;
+	BCrenel2->BaseVertexLocation = BCrenel2->Geo->DrawArgs["box"].BaseVertexLocation;
+	mAllRitems.push_back(std::move(BCrenel2));
+
 	auto gridRitem = std::make_unique<RenderItem>();
 
 	gridRitem->World = MathHelper::Identity4x4();
-	gridRitem->ObjCBIndex = 3;
+	gridRitem->ObjCBIndex = 24;
 	gridRitem->Geo = mGeometries["shapeGeo"].get();
 	gridRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
@@ -785,7 +1089,7 @@ void ShapesApp::BuildRenderItems()
 
 	mAllRitems.push_back(std::move(gridRitem));
 
-	UINT objCBIndex = 4;
+	UINT objCBIndex = 25;
 
 	for (int i = 0; i < 2; ++i)
 	{
@@ -794,6 +1098,12 @@ void ShapesApp::BuildRenderItems()
 
 		auto leftConeRitem = std::make_unique<RenderItem>();
 		auto rightConeRitem = std::make_unique<RenderItem>();
+
+		auto leftSphereRitem = std::make_unique<RenderItem>();
+		auto rightSphereRitem = std::make_unique<RenderItem>();
+
+		XMMATRIX leftSphereWorld = XMMatrixTranslation(-45.0f, 30.0f, -53.0f + i * 97.0f);
+		XMMATRIX rightSphereWorld = XMMatrixTranslation(+50.0f, 30.0f, -53.0f + i * 97.0f);
 
 		XMMATRIX leftCylWorld = XMMatrixTranslation(-45.0f, 15.0f, -53.0f + i * 97.0f);
 		XMMATRIX rightCylWorld = XMMatrixTranslation(+50.0f, 15.0f, -53.0f + i * 97.0f);
@@ -830,7 +1140,7 @@ void ShapesApp::BuildRenderItems()
 		leftConeRitem->StartIndexLocation = leftConeRitem->Geo->DrawArgs["cone"].StartIndexLocation;
 		leftConeRitem->BaseVertexLocation = leftConeRitem->Geo->DrawArgs["cone"].BaseVertexLocation;
 
-		XMStoreFloat4x4(&rightConeRitem->World, leftConeWorld);
+		XMStoreFloat4x4(&rightConeRitem->World, leftCylWorld);
 
 		rightConeRitem->ObjCBIndex = objCBIndex++;
 
@@ -840,11 +1150,37 @@ void ShapesApp::BuildRenderItems()
 		rightConeRitem->StartIndexLocation = rightConeRitem->Geo->DrawArgs["cone"].StartIndexLocation;
 		rightConeRitem->BaseVertexLocation = rightConeRitem->Geo->DrawArgs["cone"].BaseVertexLocation;
 
+		XMStoreFloat4x4(&leftSphereRitem->World, leftSphereWorld);
+
+		leftSphereRitem->ObjCBIndex = objCBIndex++;
+		leftSphereRitem->Geo = mGeometries["shapeGeo"].get();
+		leftSphereRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		leftSphereRitem->IndexCount = leftSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
+		leftSphereRitem->StartIndexLocation = leftSphereRitem->Geo->DrawArgs["sphere"].StartIndexLocation;
+		leftSphereRitem->BaseVertexLocation = leftSphereRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
+
+		XMStoreFloat4x4(&rightSphereRitem->World, rightSphereWorld);
+
+		rightSphereRitem->ObjCBIndex = objCBIndex++;
+
+		rightSphereRitem->Geo = mGeometries["shapeGeo"].get();
+		rightSphereRitem->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		rightSphereRitem->IndexCount = rightSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
+		rightSphereRitem->StartIndexLocation = rightSphereRitem->Geo->DrawArgs["sphere"].StartIndexLocation;
+		rightSphereRitem->BaseVertexLocation = rightSphereRitem->Geo->DrawArgs["sphere"].BaseVertexLocation;
+
 		mAllRitems.push_back(std::move(leftCylRitem));
 		mAllRitems.push_back(std::move(rightCylRitem));
 		mAllRitems.push_back(std::move(leftConeRitem));
 		mAllRitems.push_back(std::move(rightConeRitem));
+		mAllRitems.push_back(std::move(leftSphereRitem));
+		mAllRitems.push_back(std::move(rightSphereRitem));
 	}
+
+	
+
+		
+
 	// All the render items are opaque.
 	for (auto& e : mAllRitems)
 		mOpaqueRitems.push_back(e.get());
