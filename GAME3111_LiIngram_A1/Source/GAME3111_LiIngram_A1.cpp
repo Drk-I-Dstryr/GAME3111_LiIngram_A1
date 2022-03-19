@@ -1358,7 +1358,7 @@ private:
 
 	float mTheta = 1.5f * XM_PI;
 	float mPhi = 0.2f * XM_PI;
-	float mRadius = 15.0f;
+	float mRadius = 100.0f;
 
 	POINT mLastMousePos;
 };
@@ -1825,8 +1825,8 @@ void TexColumnsApp::BuildShapeGeometry()
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData box = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 3);
 	GeometryGenerator::MeshData grid = geoGen.CreateGrid(100.0f, 100.0f, 60, 40);
-	GeometryGenerator::MeshData sphere = geoGen.CreateSphere(0.5f, 20, 20);
-	GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(0.5f, 0.3f, 3.0f, 20, 20);
+	GeometryGenerator::MeshData sphere = geoGen.CreateSphere(12.0f, 20, 20);
+	GeometryGenerator::MeshData cylinder = geoGen.CreateCylinder(10.0f, 10.0f, 30.0f, 20, 20);
 
 	//
 	// We are concatenating all the geometry into one big vertex/index buffer.  So
