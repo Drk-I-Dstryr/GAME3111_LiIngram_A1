@@ -1285,13 +1285,13 @@ struct RenderItem
 	int BaseVertexLocation = 0;
 };
 
-class TexColumnsApp : public D3DApp
+class ShapesApp : public D3DApp
 {
 public:
-	TexColumnsApp(HINSTANCE hInstance);
-	TexColumnsApp(const TexColumnsApp& rhs) = delete;
-	TexColumnsApp& operator=(const TexColumnsApp& rhs) = delete;
-	~TexColumnsApp();
+	ShapesApp(HINSTANCE hInstance);
+	ShapesApp(const ShapesApp& rhs) = delete;
+	ShapesApp& operator=(const ShapesApp& rhs) = delete;
+	~ShapesApp();
 
 	virtual bool Initialize()override;
 
@@ -1373,7 +1373,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
 	try
 	{
-		TexColumnsApp theApp(hInstance);
+		ShapesApp theApp(hInstance);
 		if (!theApp.Initialize())
 			return 0;
 
@@ -1386,18 +1386,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	}
 }
 
-TexColumnsApp::TexColumnsApp(HINSTANCE hInstance)
+ShapesApp::ShapesApp(HINSTANCE hInstance)
 	: D3DApp(hInstance)
 {
 }
 
-TexColumnsApp::~TexColumnsApp()
+ShapesApp::~ShapesApp()
 {
 	if (md3dDevice != nullptr)
 		FlushCommandQueue();
 }
 
-bool TexColumnsApp::Initialize()
+bool ShapesApp::Initialize()
 {
 	if (!D3DApp::Initialize())
 		return false;
@@ -1431,7 +1431,7 @@ bool TexColumnsApp::Initialize()
 	return true;
 }
 
-void TexColumnsApp::OnResize()
+void ShapesApp::OnResize()
 {
 	D3DApp::OnResize();
 
@@ -1440,7 +1440,7 @@ void TexColumnsApp::OnResize()
 	XMStoreFloat4x4(&mProj, P);
 }
 
-void TexColumnsApp::Update(const GameTimer& gt)
+void ShapesApp::Update(const GameTimer& gt)
 {
 	OnKeyboardInput(gt);
 	UpdateCamera(gt);
@@ -1465,7 +1465,7 @@ void TexColumnsApp::Update(const GameTimer& gt)
 	UpdateMainPassCB(gt);
 }
 
-void TexColumnsApp::Draw(const GameTimer& gt)
+void ShapesApp::Draw(const GameTimer& gt)
 {
 	auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
 
@@ -1525,7 +1525,7 @@ void TexColumnsApp::Draw(const GameTimer& gt)
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 }
 
-void TexColumnsApp::OnMouseDown(WPARAM btnState, int x, int y)
+void ShapesApp::OnMouseDown(WPARAM btnState, int x, int y)
 {
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
@@ -1533,12 +1533,12 @@ void TexColumnsApp::OnMouseDown(WPARAM btnState, int x, int y)
 	SetCapture(mhMainWnd);
 }
 
-void TexColumnsApp::OnMouseUp(WPARAM btnState, int x, int y)
+void ShapesApp::OnMouseUp(WPARAM btnState, int x, int y)
 {
 	ReleaseCapture();
 }
 
-void TexColumnsApp::OnMouseMove(WPARAM btnState, int x, int y)
+void ShapesApp::OnMouseMove(WPARAM btnState, int x, int y)
 {
 	if ((btnState & MK_LBUTTON) != 0)
 	{
@@ -1570,11 +1570,11 @@ void TexColumnsApp::OnMouseMove(WPARAM btnState, int x, int y)
 	mLastMousePos.y = y;
 }
 
-void TexColumnsApp::OnKeyboardInput(const GameTimer& gt)
+void ShapesApp::OnKeyboardInput(const GameTimer& gt)
 {
 }
 
-void TexColumnsApp::UpdateCamera(const GameTimer& gt)
+void ShapesApp::UpdateCamera(const GameTimer& gt)
 {
 	// Convert Spherical to Cartesian coordinates.
 	mEyePos.x = mRadius * sinf(mPhi) * cosf(mTheta);
@@ -1590,12 +1590,12 @@ void TexColumnsApp::UpdateCamera(const GameTimer& gt)
 	XMStoreFloat4x4(&mView, view);
 }
 
-void TexColumnsApp::AnimateMaterials(const GameTimer& gt)
+void ShapesApp::AnimateMaterials(const GameTimer& gt)
 {
 
 }
 
-void TexColumnsApp::UpdateObjectCBs(const GameTimer& gt)
+void ShapesApp::UpdateObjectCBs(const GameTimer& gt)
 {
 	auto currObjectCB = mCurrFrameResource->ObjectCB.get();
 	for (auto& e : mAllRitems)
@@ -1619,7 +1619,7 @@ void TexColumnsApp::UpdateObjectCBs(const GameTimer& gt)
 	}
 }
 
-void TexColumnsApp::UpdateMaterialCBs(const GameTimer& gt)
+void ShapesApp::UpdateMaterialCBs(const GameTimer& gt)
 {
 	auto currMaterialCB = mCurrFrameResource->MaterialCB.get();
 	for (auto& e : mMaterials)
@@ -1645,7 +1645,7 @@ void TexColumnsApp::UpdateMaterialCBs(const GameTimer& gt)
 	}
 }
 
-void TexColumnsApp::UpdateMainPassCB(const GameTimer& gt)
+void ShapesApp::UpdateMainPassCB(const GameTimer& gt)
 {
 	XMMATRIX view = XMLoadFloat4x4(&mView);
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
@@ -1686,11 +1686,11 @@ void TexColumnsApp::UpdateMainPassCB(const GameTimer& gt)
 	currPassCB->CopyData(0, mMainPassCB);
 }
 
-void TexColumnsApp::LoadTextures()
+void ShapesApp::LoadTextures()
 {
 	auto bricksTex = std::make_unique<Texture>();
 	bricksTex->Name = "bricksTex";
-	bricksTex->Filename = L"Textures/brick.dds";
+	bricksTex->Filename = L"Textures/BricksL.dds";
 	ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(md3dDevice.Get(),
 		mCommandList.Get(), bricksTex->Filename.c_str(),
 		bricksTex->Resource, bricksTex->UploadHeap));
@@ -1709,12 +1709,14 @@ void TexColumnsApp::LoadTextures()
 		mCommandList.Get(), brickcleanTex->Filename.c_str(),
 		brickcleanTex->Resource, brickcleanTex->UploadHeap));
 
+
+
 	mTextures[bricksTex->Name] = std::move(bricksTex);
 	mTextures[stoneTex->Name] = std::move(stoneTex);
 	mTextures[brickcleanTex->Name] = std::move(brickcleanTex);
 }
 
-void TexColumnsApp::BuildRootSignature()
+void ShapesApp::BuildRootSignature()
 {
 	CD3DX12_DESCRIPTOR_RANGE texTable;
 	texTable.Init(
@@ -1757,7 +1759,7 @@ void TexColumnsApp::BuildRootSignature()
 		IID_PPV_ARGS(mRootSignature.GetAddressOf())));
 }
 
-void TexColumnsApp::BuildDescriptorHeaps()
+void ShapesApp::BuildDescriptorHeaps()
 {
 	//
 	// Create the SRV heap.
@@ -1801,7 +1803,7 @@ void TexColumnsApp::BuildDescriptorHeaps()
 	md3dDevice->CreateShaderResourceView(tileTex.Get(), &srvDesc, hDescriptor);
 }
 
-void TexColumnsApp::BuildShadersAndInputLayout()
+void ShapesApp::BuildShadersAndInputLayout()
 {
 	const D3D_SHADER_MACRO alphaTestDefines[] =
 	{
@@ -1812,6 +1814,8 @@ void TexColumnsApp::BuildShadersAndInputLayout()
 	mShaders["standardVS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "VS", "vs_5_0");
 	mShaders["opaquePS"] = d3dUtil::CompileShader(L"Shaders\\Default.hlsl", nullptr, "PS", "ps_5_0");
 
+	
+
 	mInputLayout =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -1820,7 +1824,7 @@ void TexColumnsApp::BuildShadersAndInputLayout()
 	};
 }
 
-void TexColumnsApp::BuildShapeGeometry()
+void ShapesApp::BuildShapeGeometry()
 {
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData box = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 3);
@@ -1944,7 +1948,7 @@ void TexColumnsApp::BuildShapeGeometry()
 	mGeometries[geo->Name] = std::move(geo);
 }
 
-void TexColumnsApp::BuildPSOs()
+void ShapesApp::BuildPSOs()
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc;
 
@@ -1977,7 +1981,7 @@ void TexColumnsApp::BuildPSOs()
 	ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
 }
 
-void TexColumnsApp::BuildFrameResources()
+void ShapesApp::BuildFrameResources()
 {
 	for (int i = 0; i < gNumFrameResources; ++i)
 	{
@@ -1986,7 +1990,7 @@ void TexColumnsApp::BuildFrameResources()
 	}
 }
 
-void TexColumnsApp::BuildMaterials()
+void ShapesApp::BuildMaterials()
 {
 	auto bricks0 = std::make_unique<Material>();
 	bricks0->Name = "bricks0";
@@ -2017,7 +2021,7 @@ void TexColumnsApp::BuildMaterials()
 	mMaterials["tile0"] = std::move(tile0);
 }
 
-void TexColumnsApp::BuildRenderItems()
+void ShapesApp::BuildRenderItems()
 {
 	//boxRitem->Mat = mMaterials["stone0"].get();
 	/*auto boxRitem = std::make_unique<RenderItem>();
@@ -2601,7 +2605,7 @@ void TexColumnsApp::BuildRenderItems()
 		mOpaqueRitems.push_back(e.get());
 }
 
-void TexColumnsApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
+void ShapesApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems)
 {
 	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 	UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MaterialConstants));
@@ -2632,7 +2636,7 @@ void TexColumnsApp::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const st
 	}
 }
 
-std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> TexColumnsApp::GetStaticSamplers()
+std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> ShapesApp::GetStaticSamplers()
 {
 	// Applications usually only need a handful of samplers.  So just define them all up front
 	// and keep them available as part of the root signature.  
